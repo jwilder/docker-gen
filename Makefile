@@ -15,6 +15,7 @@ dist-clean:
 	rm -f docker-gen-alpine-linux-*.tar.gz
 	rm -f docker-gen-linux-*.tar.gz
 	rm -f docker-gen-darwin-*.tar.gz
+	rm -f docker-gen-windows-*.tar.gz
 
 dist: dist-clean
 	mkdir -p dist/alpine-linux/amd64 && GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "$(LDFLAGS)" -a -tags netgo -installsuffix netgo -o dist/alpine-linux/amd64/docker-gen ./cmd/docker-gen
@@ -27,6 +28,8 @@ dist: dist-clean
 	mkdir -p dist/linux/armhf  && GOOS=linux GOARCH=arm GOARM=6 go build -ldflags "$(LDFLAGS)" -o dist/linux/armhf/docker-gen ./cmd/docker-gen
 	mkdir -p dist/darwin/amd64 && GOOS=darwin GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o dist/darwin/amd64/docker-gen ./cmd/docker-gen
 	mkdir -p dist/darwin/i386  && GOOS=darwin GOARCH=386 go build -ldflags "$(LDFLAGS)" -o dist/darwin/i386/docker-gen ./cmd/docker-gen
+	mkdir -p dist/windows/i386  && GOOS=windows GOARCH=386 go build -ldflags "$(LDFLAGS)" -o dist/windows/i386/docker-gen ./cmd/docker-gen
+	mkdir -p dist/windows/amd64  && GOOS=windows GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o dist/windows/amd64/docker-gen ./cmd/docker-gen
 
 
 release: dist
@@ -41,6 +44,8 @@ release: dist
 	tar -cvzf docker-gen-linux-armhf-$(TAG).tar.gz -C dist/linux/armhf docker-gen
 	tar -cvzf docker-gen-darwin-amd64-$(TAG).tar.gz -C dist/darwin/amd64 docker-gen
 	tar -cvzf docker-gen-darwin-i386-$(TAG).tar.gz -C dist/darwin/i386 docker-gen
+	tar -cvzf docker-gen-windows-amd64-$(TAG).tar.gz -C dist/windows/amd64 docker-gen
+	tar -cvzf docker-gen-windows-i386-$(TAG).tar.gz -C dist/windows/i386 docker-gen
 
 get-deps:
 	go get ./...
