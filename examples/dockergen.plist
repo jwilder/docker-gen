@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>/usr/bin:/usr/sbin:/bin:/sbin:/usr/local/bin:/usr/local/sbin:/opt/pkg/bin:/opt/pkg/sbin</string>
+	</dict>
+	<key>KeepAlive</key>
+	<dict>
+		<key>/Users/genevera/tmp/.coreos_running</key>
+		<true/>
+	</dict>
+	<key>Label</key>
+	<string>org.genevera.dockergen</string>
+	<key>LowPriorityBackgroundIO</key>
+	<true/>
+	<key>LowPriorityIO</key>
+	<true/>
+	<key>ProcessType</key>
+	<string>Background</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/usr/local/bin/docker-gen</string>
+		<string>-endpoint</string>
+		<string>tcp://coreos-8g-1.coreos.local:2375</string>
+		<string>-watch</string>
+		<string>-notify-output</string>
+		<string>-notify</string>
+		<string>/usr/bin/sudo /usr/local/bin/brew services restart dnsmasq</string>
+		<string>/usr/local/etc/dnsmasq.tmpl</string>
+		<string>/usr/local/etc/dnsmasq.d/dns-gen.conf</string>
+	</array>
+	<key>RunAtLoad</key>
+	<false/>
+	<key>StandardErrorPath</key>
+	<string>/Users/genevera/var/log/dnsgen.err</string>
+	<key>StandardOutPath</key>
+	<string>/Users/genevera/var/log/dnsgen.log</string>
+	<key>UserName</key>
+	<string>genevera</string>
+	<key>WorkingDirectory</key>
+	<string>/Users/genevera/tmp</string>
+</dict>
+</plist>
