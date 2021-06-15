@@ -31,6 +31,21 @@ func exists(path string) (bool, error) {
 	return false, err
 }
 
+func read(path string) (string, error) {
+	_, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return "", nil
+		}
+		return "", err
+	}
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+        return "", err
+    }
+	return string(b), nil
+}
+
 func getArrayValues(funcName string, entries interface{}) (*reflect.Value, error) {
 	entriesVal := reflect.ValueOf(entries)
 
@@ -436,6 +451,7 @@ func newTemplate(name string) *template.Template {
 		"dict":                   dict,
 		"dir":                    dirList,
 		"exists":                 exists,
+		"read":                   read,
 		"first":                  arrayFirst,
 		"groupBy":                groupBy,
 		"groupByKeys":            groupByKeys,
