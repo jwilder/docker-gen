@@ -387,6 +387,7 @@ func (g *generator) getContainers() ([]*RuntimeContainer, error) {
 			Name:         strings.TrimLeft(container.Name, "/"),
 			Hostname:     container.Config.Hostname,
 			Gateway:      container.NetworkSettings.Gateway,
+			NetworkMode:  container.HostConfig.NetworkMode,
 			Addresses:    []Address{},
 			Networks:     []Network{},
 			Env:          make(map[string]string),

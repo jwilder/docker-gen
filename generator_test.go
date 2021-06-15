@@ -79,6 +79,9 @@ func TestGenerateFromEvents(t *testing.T) {
 				Cmd:          []string{"/bin/sh"},
 				Image:        "base:latest",
 			},
+			HostConfig: &docker.HostConfig{
+				NetworkMode: "container:d246e2c9e3d465d96359c942e91de493f6d51a01ba33900d865180d64c34ee91",
+			},
 			State: docker.State{
 				Running:   true,
 				Pid:       400,
