@@ -191,12 +191,22 @@ func (g *generator) generateFromEvents() {
 			watchers = append(watchers, watcher)
 
 			debouncedChan := newDebounceChannel(watcher, config.Wait)
-			for _ = range debouncedChan {
+			for event := range debouncedChan {
 				containers, err := g.getContainers()
 				if err != nil {
 					log.Printf("Error listing containers: %s\n", err)
 					continue
 				}
+
+				if event.Status == "kill" {
+					for i := len(containers) - 1; i >= 0; i-- {
+						if containers[i].ID == event.ID {
+							containers[i].State.Killing = true
+							break
+						}
+					}
+				}
+
 				changed := GenerateFile(config, containers)
 				if !changed {
 					log.Printf("Contents of %s did not change. Skipping notification '%s'", config.Dest, config.NotifyCmd)
@@ -270,7 +280,7 @@ func (g *generator) generateFromEvents() {
 						time.Sleep(10 * time.Second)
 						break
 					}
-					if event.Status == "start" || event.Status == "stop" || event.Status == "die" {
+					if event.Status == "start" || event.Status == "stop" || event.Status == "die" || event.Status == "kill" {
 						log.Printf("Received event %s for container %s", event.Status, event.ID[:12])
 						// fanout event to all watchers
 						for _, watcher := range watchers {
@@ -383,6 +393,7 @@ func (g *generator) getContainers() ([]*RuntimeContainer, error) {
 			},
 			State: State{
 				Running: container.State.Running,
+				Killing: false,
 			},
 			Name:         strings.TrimLeft(container.Name, "/"),
 			Hostname:     container.Config.Hostname,
