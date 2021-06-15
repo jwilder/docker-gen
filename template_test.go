@@ -727,6 +727,24 @@ func TestTrim(t *testing.T) {
 	}
 }
 
+func TestToLower(t *testing.T) {
+	const str = ".RaNd0m StrinG_"
+	const lowered = ".rand0m string_"
+	got := toLower(str)
+	if got != lowered {
+		t.Fatalf("Expected toLower(%s) to be '%s', got '%s'", str, lowered, got)
+	}
+}
+
+func TestToUpper(t *testing.T) {
+	const str = ".RaNd0m StrinG_"
+	const uppered = ".RAND0M STRING_"
+	got := toUpper(str)
+	if got != uppered {
+		t.Fatalf("Expected toUpper(%s) to be '%s', got '%s'", str, uppered, got)
+	}
+}
+
 func TestDict(t *testing.T) {
 	containers := []*RuntimeContainer{
 		&RuntimeContainer{
