@@ -74,6 +74,12 @@ type Network struct {
 	IPPrefixLen         int
 }
 
+type Device struct {
+	PathOnHost      string
+	PathInContainer string
+	Permissions     string
+}
+
 type Volume struct {
 	Path      string
 	HostPath  string
@@ -88,6 +94,7 @@ type RuntimeContainer struct {
 	ID           string
 	Addresses    []Address
 	Networks     []Network
+	Devices      []Device
 	Gateway      string
 	Name         string
 	Hostname     string

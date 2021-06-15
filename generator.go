@@ -389,6 +389,7 @@ func (g *generator) getContainers() ([]*RuntimeContainer, error) {
 			Gateway:      container.NetworkSettings.Gateway,
 			Addresses:    []Address{},
 			Networks:     []Network{},
+			Devices:      []Device{},
 			Env:          make(map[string]string),
 			Volumes:      make(map[string]Volume),
 			Node:         SwarmNode{},
@@ -452,6 +453,14 @@ func (g *generator) getContainers() ([]*RuntimeContainer, error) {
 				Driver:      v.Driver,
 				Mode:        v.Mode,
 				RW:          v.RW,
+			})
+		}
+
+		for _, v := range container.HostConfig.Devices {
+			runtimeContainer.Devices = append(runtimeContainer.Devices, Device{
+				PathOnHost:      v.PathOnHost,
+				PathInContainer: v.PathInContainer,
+				Permissions:     v.CgroupPermissions,
 			})
 		}
 

@@ -95,6 +95,15 @@ func TestGenerateFromEvents(t *testing.T) {
 				Ports:       map[docker.Port][]docker.PortBinding{},
 			},
 			ResolvConfPath: "/etc/resolv.conf",
+			HostConfig: &docker.HostConfig{
+				Devices: []docker.Device{
+					docker.Device{
+						PathOnHost:        "/dev/ttyACM0",
+						PathInContainer:   "/dev/ttyUSB0",
+						CgroupPermissions: "rwm",
+					},
+				},
+			},
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

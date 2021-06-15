@@ -217,6 +217,7 @@ type RuntimeContainer struct {
     ID           string
     Addresses    []Address
     Networks     []Network
+    Devices      []Device
     Gateway      string
     Name         string
     Hostname     string
@@ -285,6 +286,12 @@ type State struct {
   Running bool
 }
 
+type Device struct {
+  PathOnHost      string
+  PathInContainer string
+  Permissions     string
+}
+
 // Accessible from the root in templates as .Docker
 type Docker struct {
     Name                 string
@@ -316,7 +323,14 @@ For example, this is a JSON version of an emitted RuntimeContainer struct:
          "HostPort":"2222"
       }
    ],
-   "Gateway":"172.17.42.1",
+   "Devices":[
+      {
+         "PathOnHost": "/dev/ttyACM0",
+         "PathInContainer": "/dev/ttyUSB0",
+         "Permissions": "rwm"
+      }
+   ],
+   "Gateway": "172.17.42.1",
    "Node": {
        "ID":"I2VY:P7PF:TZD5:PGWB:QTI7:QDSP:C5UD:DYKR:XKKK:TRG2:M2BL:DFUN",
        "Name":"docker-test",
@@ -371,7 +385,7 @@ For example, this is a JSON version of an emitted RuntimeContainer struct:
 * *`json $value`*: Returns the JSON representation of `$value` as a `string`.
 * *`keys $map`*: Returns the keys from `$map`. If `$map` is `nil`, a `nil` is returned. If `$map` is not a `map`, an error will be thrown.
 * *`last $array`*: Returns the last value of an array.
-* *`parseBool $string`*: parseBool returns the boolean value represented by the string. It accepts 1, t, T, TRUE, true, True, 0, f, F, FALSE, false, False. Any other value returns an error. Alias for [`strconv.ParseBool`](http://golang.org/pkg/strconv/#ParseBool) 
+* *`parseBool $string`*: parseBool returns the boolean value represented by the string. It accepts 1, t, T, TRUE, true, True, 0, f, F, FALSE, false, False. Any other value returns an error. Alias for [`strconv.ParseBool`](http://golang.org/pkg/strconv/#ParseBool)
 * *`replace $string $old $new $count`*: Replaces up to `$count` occurences of `$old` with `$new` in `$string`. Alias for [`strings.Replace`](http://golang.org/pkg/strings/#Replace)
 * *`sha1 $string`*: Returns the hexadecimal representation of the SHA1 hash of `$string`.
 * *`split $string $sep`*: Splits `$string` into a slice of substrings delimited by `$sep`. Alias for [`strings.Split`](http://golang.org/pkg/strings/#Split)
@@ -462,4 +476,3 @@ $ make
 ### License
 
 MIT
-
