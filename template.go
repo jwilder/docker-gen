@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -428,6 +429,36 @@ func when(condition bool, trueValue, falseValue interface{}) interface{} {
 	}
 }
 
+// sortStrings returns a sorted array of strings
+func sortStrings(values []string) []string {
+	sort.Strings(values)
+	return values
+}
+
+// sortStrings returns a sorted array of strings
+func sortStringsReverse(values []string) []string {
+	sort.Sort(sort.Reverse(sort.StringSlice(values)))
+	return values
+}
+
+// sortObjects returns a sorted array of objects (sorted by object key field)
+func sortObjects(objs interface{}, key string) (interface{}, error) {
+	objsVal, err := getArrayValues("sortObj", objs)
+	if err != nil {
+		return nil, err
+	}
+	data := make([]interface{}, objsVal.Len())
+	for i := 0; i < objsVal.Len(); i++ {
+		data[i] = objsVal.Index(i).Interface()
+	}
+	sort.Slice(data, func(i, j int) bool {
+		a := reflect.ValueOf(deepGet(data[i], key)).Interface().(string)
+		b := reflect.ValueOf(deepGet(data[j], key)).Interface().(string)
+		return a < b
+	})
+	return data, nil
+}
+
 func newTemplate(name string) *template.Template {
 	tmpl := template.New(name).Funcs(template.FuncMap{
 		"closest":                arrayClosest,
@@ -451,9 +482,13 @@ func newTemplate(name string) *template.Template {
 		"parseBool":              strconv.ParseBool,
 		"parseJson":              unmarshalJson,
 		"queryEscape":            url.QueryEscape,
+		"reverse":                sort.Reverse,
 		"sha1":                   hashSha1,
 		"split":                  strings.Split,
 		"splitN":                 strings.SplitN,
+		"sortStrings":            sortStrings,
+		"sortStringsReverse":     sortStringsReverse,
+		"sortObjects":            sortObjects,
 		"trimPrefix":             trimPrefix,
 		"trimSuffix":             trimSuffix,
 		"trim":                   trim,
